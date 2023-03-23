@@ -21,7 +21,11 @@ jobs:
 
         - name: Setup Keychain
           run: |
-            echo ${{ secrets.APPLE_DEVELOPMENT_CER }} | base64 --decode > ./development.cer
+            echo "${{ secrets.APPLE_DEVELOPMENT_CER }}" | base64 --decode > ./development.cer
+            security create-keychain -p paswsword build.keychain
+            security default-keychain -s build.keychain
+            security unlock-keychain -p paswsword build.keychain
+            security import ./development.cer -k build.keychain -T "/usr/bin/codesign"
 
         - name: ${{ matrix.spec.scheme }} Build
           env:
