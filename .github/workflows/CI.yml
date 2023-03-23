@@ -30,4 +30,4 @@ jobs:
             AUTH_KEY_ISSUER_ID: ${{ secrets.APPLE_DEVELOPER_KEY_ISSUER_ID }}
           run: |
             echo ${AUTH_KEY} | base64 --decode > ./auth.p8
-            xcodebuild -allowProvisioningUpdates -authenticationKeyPath ${PWD}/auth.p8 -authenticationKeyID ${AUTH_KEY_ID} -authenticationKeyIssuerID ${AUTH_KEY_ISSUER_ID} -configuration ${CONFIG} -scheme ${SCHEME} ${ARCH_FLAGS} -sdk ${SDK} -destination ${DESTINATION} 
+            xcodebuild build -allowProvisioningUpdates -authenticationKeyPath ${PWD}/auth.p8 -authenticationKeyID ${AUTH_KEY_ID} -authenticationKeyIssuerID ${AUTH_KEY_ISSUER_ID} -configuration ${CONFIG} -scheme ${SCHEME} ${ARCH_FLAGS} -sdk ${SDK} -destination ${DESTINATION} 
