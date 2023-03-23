@@ -26,6 +26,7 @@ jobs:
             security default-keychain -s build.keychain
             security unlock-keychain -p paswsword build.keychain
             security import ./development.cer -k build.keychain -T "/usr/bin/codesign"
+            security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k paswsword build.keychain
 
         - name: ${{ matrix.spec.scheme }} Build
           env:
