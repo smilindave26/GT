@@ -19,6 +19,14 @@ jobs:
           with:
             xcode-version: '14.2'
 
+        - name: Setup Keychain
+          run: |
+            echo ${{ secrets.APPLE_DEVELOPMENT_CER }} | base64 --decode > ./development.cer
+            security create-keychain -p paswsword build.keychain
+            security default-keychain -s build.keychain
+            security unlock-keychain -p paswsword build.keychain
+            security import ./development.cer -k build.keychain -T "/usr/bin/codesign"
+
         - name: ${{ matrix.spec.scheme }} Build
           env:
             SCHEME: ${{ matrix.spec.scheme }}
@@ -31,3 +39,9 @@ jobs:
           run: |
             echo ${AUTH_KEY} | base64 --decode > ./auth.p8
             xcodebuild build -allowProvisioningUpdates -authenticationKeyPath ${PWD}/auth.p8 -authenticationKeyID ${AUTH_KEY_ID} -authenticationKeyIssuerID ${AUTH_KEY_ISSUER_ID} -configuration ${CONFIG} -scheme ${SCHEME} ${ARCH_FLAGS} -sdk ${SDK} -destination ${DESTINATION} 
+
+        - name: Remove Keychain
+          if: always()
+          run: |
+            security default-keychain -s "login.keychain"
+            security delete-keychain build.keychain
